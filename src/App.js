@@ -35,9 +35,11 @@ class App extends Component {
     let url = process.env.REACT_APP_SERVER_URL + '/test'
     this.setState({ spinnerActive: true }, () => axios.get(url)
       .then(res => {
+        alert('OK')
         console.log(res.data)
       })
       .catch(err => {
+        alert('Error')
         console.error(err)
       })
       .finally(() => {
@@ -67,10 +69,10 @@ class App extends Component {
           <label for="keywords">Your Name: </label>
           <input type="text" id="name" name="name" onChange={this.handleTextChange} />
         </div>
+        <input type="submit" value="Inquire" onClick={this.inquire} />
         <input type="submit" value="Test" onClick={this.test} />
       </>
   );
-  //<input type="submit" value="Inquire" onClick={this.inquire} />
 }
 
 export default App;
