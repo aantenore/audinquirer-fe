@@ -18,17 +18,32 @@ class App extends Component {
       let splittedKeywords = keywords.split(',').filter(k => k.trim() !== "").map(k => encodeURIComponent(k));
       let url = process.env.REACT_APP_SERVER_URL + "/inquire?n=" + name + "&k=" + JSON.stringify(splittedKeywords)
       this.setState({ spinnerActive: true }, () => axios.get(url)
+        .then(res => {
+          console.log(res.data)
+        })
+        .catch(err => {
+          console.error(err)
+        })
+        .finally(() => {
+          this.setState({ spinnerActive: false })
+        })
+      );
+    }
+  }
+
+  test = () => {
+    let url = process.env.REACT_APP_SERVER_URL + '/test'
+    this.setState({ spinnerActive: true }, () => axios.get(url)
       .then(res => {
         console.log(res.data)
       })
-      .catch(err=>{
+      .catch(err => {
         console.error(err)
       })
-      .finally(()=>{
+      .finally(() => {
         this.setState({ spinnerActive: false })
       })
-      );
-    }
+    );
   }
 
   handleTextChange = (e) => {
@@ -52,9 +67,10 @@ class App extends Component {
           <label for="keywords">Your Name: </label>
           <input type="text" id="name" name="name" onChange={this.handleTextChange} />
         </div>
-        <input type="submit" value="Inquire" onClick={this.inquire} />
+        <input type="submit" value="Test" onClick={this.test} />
       </>
   );
+  //<input type="submit" value="Inquire" onClick={this.inquire} />
 }
 
 export default App;
