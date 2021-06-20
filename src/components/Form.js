@@ -18,7 +18,7 @@ class Form extends Component {
             </div>
             <br />
             <div>
-                <input type="submit" value="Inquire" onClick={this.props.inquire} />
+                {/* <input type="submit" value="Inquire" onClick={this.props.inquire} /> */}
                 <input type="submit" value="Test" onClick={this.props.test} />
             </div>
         </>
