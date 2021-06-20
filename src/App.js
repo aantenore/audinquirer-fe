@@ -3,11 +3,14 @@ import { Component } from 'react';
 import axios from 'axios';
 import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Form from './components/Form'
+import InsertPin from './components/InsertPin'
 
 class App extends Component {
 
   state = {
-    spinnerActive: false
+    spinnerActive: false,
+    loggedIn: false
   }
 
   inquire = () => {
@@ -54,24 +57,18 @@ class App extends Component {
     this.setState(newState)
   }
 
+  verifyPin = (e) => {
+    let pin = e.target.pin.value
+    this.setState({loggedIn:('_9salsiccia84'===pin)})
+  }
+
   render = () => (
-    this.state.spinnerActive ?
-      <div>
-        <Spinner animation="grow" />
-      </div>
+    !this.state.loggedIn?
+      <InsertPin verifyPin={this.verifyPin}/>
+    :this.state.spinnerActive ?
+      <Spinner animation="grow" />
       :
-      <>
-        <div>
-          <label for="keywords">Keywords divided by commas (,): </label>
-          <input type="text" id="keywords" name="keywords" onChange={this.handleTextChange} />
-        </div>
-        <div>
-          <label for="keywords">Your Name: </label>
-          <input type="text" id="name" name="name" onChange={this.handleTextChange} />
-        </div>
-        <input type="submit" value="Inquire" onClick={this.inquire} />
-        <input type="submit" value="Test" onClick={this.test} />
-      </>
+      <Form handleTextChange={this.handleTextChange} inquire={this.inquire} test={this.test} />
   );
 }
 
