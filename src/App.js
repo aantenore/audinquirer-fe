@@ -27,7 +27,13 @@ class App extends Component {
           let dataRes = res.data
           console.log(res.data)
           let config = dataRes.config
-          FileHelper.writeExcel(ExcelHelper.fillExcel(dataRes), config.EXCEL_FILE_PATH, () => console.log('DONE!'), () => console.log('CLOSE THE EXCEL BULLSHIT!'))
+          let errorK = JSON.stringify(dataRes.errorKs)
+          let k = JSON.stringify(dataRes.keywords)
+          if(errorK === k){
+            alert('Error, no report can be downloaded')
+          }else{
+            FileHelper.writeExcel(ExcelHelper.fillExcel(dataRes), config.EXCEL_FILE_PATH, () => console.log('DONE!'), () => console.log('ERROR WRITING THE EXCEL!'))
+          }
         })
         .catch(err => {
           console.error(err)

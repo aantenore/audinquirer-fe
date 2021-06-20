@@ -1,5 +1,3 @@
-const fs = require('fs')
-
 class ExcelHelper {
 
     static fillExcel = (data) => {
@@ -60,16 +58,29 @@ class ExcelHelper {
                     }
                     return key
                 })
-                if (fs.existsSync('links.txt')) {
-                    fs.unlinkSync('links.txt')
-                }
-                fs.writeFileSync('links.txt', links)
+                ExcelHelper.writeDownloadLinksFile(links)
             }
             return stat
         })
         return result
     }
 
+
+    static writeDownloadLinksFile(links) {
+        const oldElement = document.querySelector('#linksDownloadId')
+        if (oldElement) {
+            oldElement.remove()
+        }
+        if (links && links.trim() !== '') {
+            var element = document.createElement("a")
+            element.setAttribute("id", "linksDownloadId")
+            const file = new Blob([links], { type: 'text/plain' })
+            element.href = URL.createObjectURL(file)
+            element.download = "links.txt"
+            document.body.appendChild(element)
+            element.click()
+        }
+    }
 }
 
 export default ExcelHelper
