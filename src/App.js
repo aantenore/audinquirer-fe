@@ -25,10 +25,10 @@ class App extends Component {
       let splittedKeywords = keywords.split(',').filter(k => k.trim() !== "").map(k => encodeURIComponent(k));
       let url = process.env.REACT_APP_SERVER_URL + "/inquire?n=" + name + "&k=" + JSON.stringify(splittedKeywords)
       this.setState({ spinnerActive: true }, () => {
-        let progressSpeed = ((splittedKeywords.length ? splittedKeywords.length : 0) * 12000)
+        let progressSpeed = ((splittedKeywords.length ? splittedKeywords.length : 0) * 6000)
         console.log(progressSpeed, 'speed')
         this.setState({ progress: 0 },()=>this.progressBar(0, progressSpeed))
-        axios.get(url)
+        axios.get(url,{timeout: 60000})
           .then(res => {
             let dataRes = res.data
             console.log(res.data)
