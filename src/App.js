@@ -53,7 +53,7 @@ class App extends Component {
   }
 
   progressBar = (progressNum = 0, progressSpeed = 1000, count = 0) => {
-    console.log(this.state.progress, 'progress')
+    //console.log(this.state.progress, 'progress')
     if (progressNum === this.state.progress) {
       count++;
     } else {
