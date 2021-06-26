@@ -75,7 +75,7 @@ var processBook = async (book, keyword) => {
 }
 
 
-var processKeyword = async (keyword) => {
+var processKeyword = async (keyword, goToProgressBarState = () => {}, keywordIndex = 0, totalKeywords = 1) => {
     console.log('[inquirer.processKeyword] keyword: ', keyword)
     let audibleUrl = config.AUDIBLE_URL.replace('{searchString}', encodeURIComponent(keyword))
 
@@ -85,6 +85,7 @@ var processKeyword = async (keyword) => {
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
         let book = books[bookIndex]
         await processBook(book, keyword).catch(e => { console.error('[inquirer.processKeyword] processKeywordError for book: ', books[bookIndex].titleAU, '\n', e); throw e; })
+        goToProgressBarState(((keywordIndex/totalKeywords)+((bookIndex/books.length)/totalKeywords))*100)
     }
     output[keyword]['competitors'] = booksAndCompetitor.competitorsAU
 }
@@ -160,14 +161,14 @@ var initDir = () => {
 }
 
 
-var main = async (name, keywords = []) => {
+var main = async (name, keywords = [], goToProgressBarState = () => {}) => {
     initDir()
     await setConfig()
     //await setKeywords()
     let errorKs = []
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
         let keyword = keywords[keywordIndex]
-        await processKeyword(keyword).catch((e) => {
+        await processKeyword(keyword,goToProgressBarState,keywordIndex,keywords.length).catch((e) => {
             console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
             errorKs.push(keyword)
         })

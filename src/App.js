@@ -9,15 +9,22 @@ import FileHelper from './helper/FileHelper';
 import { ProgressBar } from 'react-bootstrap';
 import { Hook, Console, Decode } from 'console-feed';
 import inquirer from './core/inquirer/inquirer'
+import UploadExcel from './components/UploadExcel';
+import { createPortal } from 'react-dom';
 
 class App extends Component {
 
   state = {
     spinnerActive: false,
-    showLog : false,
+    showLog: false,
     loggedIn: false,
     progress: 0,
-    logs: []
+    logs: [],
+    existingRows: []
+  }
+
+  setExistingData = (existingRows) => {
+    this.setState({ existingRows })
   }
 
   inquire = () => {
@@ -28,12 +35,10 @@ class App extends Component {
       let splittedKeywords = keywords.split(',').filter(k => k.trim() !== "");//.map(k => encodeURIComponent(k));
       //let url = process.env.REACT_APP_SERVER_URL + "/inquire?n=" + name + "&k=" + JSON.stringify(splittedKeywords)
       this.setState({ spinnerActive: true }, () => {
-        let progressSpeed = ((splittedKeywords.length ? splittedKeywords.length : 0) * 6000)
-        console.log(progressSpeed, 'speed')
-        this.setState({ progress: 0 }, async () => {
-          this.progressBar(0, progressSpeed)
-          await inquirer.inquire(name, splittedKeywords)
+        this.setState({progress:0}, async () => {
+          await inquirer.inquire(name, splittedKeywords, this.goToProgressBar)
             .then(dataRes => {
+              dataRes.rows = this.state.existingRows
               let config = dataRes.config
               let errorK = JSON.stringify(dataRes.errorKs)
               let k = JSON.stringify(dataRes.keywords)
@@ -55,16 +60,8 @@ class App extends Component {
     }
   }
 
-  progressBar = (progressNum = 0, progressSpeed = 1000, count = 0) => {
-    //console.log(this.state.progress, 'progress')
-    if (progressNum === this.state.progress) {
-      count++;
-    } else {
-      count = 0;
-    }
-    if (this.state.progress < 100 && count < 4) {
-      setTimeout(() => { this.setState({ progress: progressNum }, () => this.progressBar(progressNum + 10, progressSpeed, count)) }, progressSpeed)
-    }
+  goToProgressBar = (progressNum = 0) => {
+    this.setState({ progress: progressNum })
   }
 
   handleTextChange = (e) => {
@@ -98,6 +95,7 @@ class App extends Component {
           :
           <div>
             <Form handleTextChange={this.handleTextChange} inquire={this.inquire} />
+            <UploadExcel setExistingData={this.setExistingData}></UploadExcel>
             {this.state.showLog && <div className="centeredDiv" style={{ backgroundColor: '#242424' }}>
               <Console logs={this.state.logs} variant="dark" />
             </div>}
