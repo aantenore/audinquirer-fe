@@ -1,0 +1,22 @@
+{
+    "verbose": true,
+    "extendedLogs": true,
+    "DO_SCREEN_AMAZON": false,
+    "DO_SCREEN_AUDIBLE": false,
+    "EXCEL_FILE_PATH": "./audibleKeyWordsAnalysisResults.xlsx",
+    "KEYWORDS_FILE_PATH": "./keywords.json",
+    "AUDIBLE_URL": "https://www.audible.com/search?keywords={searchString}&ipRedirectOverride=true&overrideBaseCountry=true",
+    "AMAZON_URL": "https://www.amazon.com/s?k={searchString}&i={searchType}&rh=n%3A18145289011%2Cp_n_feature_twelve_browse-bin%3A18685552011&dc",
+    "translate": {
+        "A": "meno di 30k",
+        "B": "15k e più di 30gg",
+        "D": "meno di 30 gg",
+        "C": "competitors",
+        "E": "meno di 30k e self-published",
+        "G": "keyword contenuta nel titolo o sottotitolo o autore o narratore",
+        "H": "meno di 30k e titolo = keyword",
+        "I": "quanti miei libri ci sono",
+        "L": "meno di 100 review",
+        "F": "link da controllare per self-published"
+    }
+}

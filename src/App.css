@@ -36,8 +36,3 @@
     transform: rotate(360deg);
   }
 }
-
-.centeredDiv{
-  position: absolute;
-  right: 45%;
-}
