@@ -43,6 +43,7 @@ class App extends Component {
           })
           .catch(err => {
             console.error(err)
+            alert('Error, no report can be downloaded')
           })
           .finally(() => {
             this.setState({ spinnerActive: false })
@@ -66,7 +67,7 @@ class App extends Component {
 
   test = () => {
     let url = process.env.REACT_APP_SERVER_URL + '/test'
-    this.setState({ spinnerActive: true }, () => axios.get(url)
+    this.setState({ spinnerActive: true }, () => axios.get(url, {timeout: 60000})
       .then(res => {
         alert('OK')
         console.log(res.data)
