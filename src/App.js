@@ -14,8 +14,10 @@ class App extends Component {
 
   state = {
     spinnerActive: false,
+    showLog : false,
     loggedIn: false,
-    progress: 0
+    progress: 0,
+    logs: []
   }
 
   inquire = () => {
@@ -94,20 +96,20 @@ class App extends Component {
           </>
         )
           :
-          <>
+          <div>
             <Form handleTextChange={this.handleTextChange} inquire={this.inquire} />
-            <div style={{ backgroundColor: '#242424' }}>
+            {this.state.showLog && <div className="centeredDiv" style={{ backgroundColor: '#242424' }}>
               <Console logs={this.state.logs} variant="dark" />
-            </div>
-          </>
+            </div>}
+          </div>
       }
     </div>
   );
 
   componentDidMount = () => {
-    // Hook(window.console, (log) => {
-    //   this.setState(({ logs }) => ({ logs: [...logs, Decode(log)] }))
-    // })
+    this.state.showLog && Hook(window.console, (log) => {
+      this.setState({ logs: [...this.state.logs, Decode(log)] })
+    })
   };
 }
 export default App;

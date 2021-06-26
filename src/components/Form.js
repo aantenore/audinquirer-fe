@@ -17,7 +17,7 @@ class Form extends Component {
                 <input type="text" id="name" name="name" onChange={this.props.handleTextChange} />
             </div>
             <br />
-            <div className="absoluteHorizontalCenteredDiv">
+            <div>
                 <input type="submit" value="Inquire" onClick={this.props.inquire} />
             </div>
         </>

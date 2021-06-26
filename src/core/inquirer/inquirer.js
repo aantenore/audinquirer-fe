@@ -39,13 +39,15 @@ var setLogMode = () => {
 }
 
 var getBooks = async (url, name) => {
-    let result = await parser.getBooks(url, config.DO_SCREEN_AUDIBLE && name).catch(e => { console.error('[inquirer.getBooks] Error for getBooks', process.env.VERBOSE === 'true' ? e : ""); throw e; })
+    let result;
+    await parser.getBooks(url, config.DO_SCREEN_AUDIBLE && name).then(res=>result=res.data).catch(e => { console.error('[inquirer.getBooks] Error for getBooks', process.env.VERBOSE === 'true' ? e : ""); throw e; })
     if (process.env.EXTENDEDLOGS === 'true') console.log('[inquirer.getBooks] books: ', result)
     return result
 }
 
 var getBookDetails = async (url, name) => {
-    let result = await parser.getBookDetails(url, config.DO_SCREEN_AMAZON && name).catch(e => {
+    let result
+    await parser.getBookDetails(url, config.DO_SCREEN_AMAZON && name).then(res=>result=res.data).catch(e => {
         console.error('[inquirer.getBookDetails] Error for getBookDetails', process.env.VERBOSE === 'true' ? e : "");
         throw e;
     })
@@ -55,7 +57,8 @@ var getBookDetails = async (url, name) => {
 
 
 var getBookUrl = async (url, name) => {
-    let result = await parser.getBookUrl(url, config.DO_SCREEN_AMAZON && name).catch(e => { console.error('[inquirer.getBookUrl] Error for getBookUrl', process.env.VERBOSE === 'true' ? e : ""); throw e; })
+    let result
+    await parser.getBookUrl(url, config.DO_SCREEN_AMAZON && name).then(res=>result=res.data).catch(e => { console.error('[inquirer.getBookUrl] Error for getBookUrl', process.env.VERBOSE === 'true' ? e : ""); throw e; })
     if (process.env.EXTENDEDLOGS === 'true') console.log('[inquirer.getBookUrl] book url: ', result)
     return result
 }
