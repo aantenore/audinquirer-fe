@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import '../App.css';
 
 class InsertPin extends Component {
 
@@ -10,7 +11,9 @@ class InsertPin extends Component {
                 <label>Pin: </label>
                 <input type="password" id="pin" name="pin"/>
             </div>
-            <input type="submit" value="OK"/>
+            <div className="centeredDiv">
+                <input type="submit" value="OK"/>
+            </div>
         </form>
         </>
     );

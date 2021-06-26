@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import '../App.css';
 
 class Form extends Component {
 
@@ -17,7 +18,7 @@ class Form extends Component {
                 <input type="text" id="name" name="name" onChange={this.props.handleTextChange} />
             </div>
             <br />
-            <div>
+            <div className="centeredDiv">
                 <input type="submit" value="Inquire" onClick={this.props.inquire} />
                 <input type="submit" value="Test" onClick={this.props.test} />
             </div>

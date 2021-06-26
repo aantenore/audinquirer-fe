@@ -94,7 +94,8 @@ class App extends Component {
   }
 
   render = () => (
-    !this.state.loggedIn ?
+    <div className="centeredDiv">
+    {!this.state.loggedIn ?
       <InsertPin verifyPin={this.verifyPin} />
       : this.state.spinnerActive ? (
         <>
@@ -111,6 +112,8 @@ class App extends Component {
       )
         :
         <Form handleTextChange={this.handleTextChange} inquire={this.inquire} test={this.test} />
+    }
+    </div>
   );
 }
 
