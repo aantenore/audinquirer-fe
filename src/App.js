@@ -10,7 +10,6 @@ import { ProgressBar } from 'react-bootstrap';
 import { Hook, Console, Decode } from 'console-feed';
 import inquirer from './core/inquirer/inquirer'
 import UploadExcel from './components/UploadExcel';
-import { createPortal } from 'react-dom';
 
 class App extends Component {
 
@@ -61,7 +60,7 @@ class App extends Component {
   }
 
   goToProgressBar = (progressNum = 0) => {
-    this.setState({ progress: progressNum })
+    this.setState({ progress: (this.state.progress+progressNum) })
   }
 
   handleTextChange = (e) => {

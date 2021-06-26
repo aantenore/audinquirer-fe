@@ -85,7 +85,7 @@ var processKeyword = async (keyword, goToProgressBarState = () => {}, keywordInd
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
         let book = books[bookIndex]
         await processBook(book, keyword).catch(e => { console.error('[inquirer.processKeyword] processKeywordError for book: ', books[bookIndex].titleAU, '\n', e); throw e; })
-        goToProgressBarState(((keywordIndex/totalKeywords)+((bookIndex/books.length)/totalKeywords))*100)
+        goToProgressBarState((bookIndex+1)/(books.length*totalKeywords)*10)
     }
     output[keyword]['competitors'] = booksAndCompetitor.competitorsAU
 }
@@ -153,26 +153,19 @@ var processOutput = (myName) => {
 }
 
 
-var initDir = () => {
-    /*if (fs.existsSync('screens')) {
-        fs.rmdirSync('screens', { recursive: true, force: true })
-    }
-    fs.mkdirSync('screens')*/
-}
-
-
 var main = async (name, keywords = [], goToProgressBarState = () => {}) => {
-    initDir()
     await setConfig()
     //await setKeywords()
     let errorKs = []
+    let keywordPromises = []
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
         let keyword = keywords[keywordIndex]
-        await processKeyword(keyword,goToProgressBarState,keywordIndex,keywords.length).catch((e) => {
+        keywordPromises.push(processKeyword(keyword,goToProgressBarState,keywordIndex,keywords.length).catch((e) => {
             console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
             errorKs.push(keyword)
-        })
+        }))
     }
+    await Promise.all(keywordPromises)
     let stats = processOutput(name)
     if (stats) {
         Object.keys(stats).map(k => {
