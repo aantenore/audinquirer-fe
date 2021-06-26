@@ -27,7 +27,7 @@ class App extends Component {
       this.setState({ spinnerActive: true }, () => {
         let progressSpeed = ((splittedKeywords.length ? splittedKeywords.length : 0) * 1200)
         console.log(progressSpeed, 'speed')
-        this.progressBar(0, progressSpeed)
+        this.setState({ progress: 0 },()=>this.progressBar(0, progressSpeed))
         axios.get(url)
           .then(res => {
             let dataRes = res.data
