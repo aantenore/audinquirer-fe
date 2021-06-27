@@ -41,14 +41,14 @@ var setLogMode = () => {
 
 var getBooks = async (url, name) => {
     let result;
-    await parser.getBooks(url, config.DO_SCREEN_AUDIBLE && name).then(res=>result=res.data).catch(e => { console.error('[inquirer.getBooks] Error for getBooks', process.env.VERBOSE === 'true' ? e : ""); throw e; })
+    await parser.getBooks(url, config.DO_SCREEN_AUDIBLE && name).then(res => result = res.data).catch(e => { console.error('[inquirer.getBooks] Error for getBooks', process.env.VERBOSE === 'true' ? e : ""); throw e; })
     if (process.env.EXTENDEDLOGS === 'true') console.log('[inquirer.getBooks] books: ', result)
     return result
 }
 
 var getBookDetails = async (url, name) => {
     let result
-    await parser.getBookDetails(url, config.DO_SCREEN_AMAZON && name).then(res=>result=res.data).catch(e => {
+    await parser.getBookDetails(url, config.DO_SCREEN_AMAZON && name).then(res => result = res.data).catch(e => {
         console.error('[inquirer.getBookDetails] Error for getBookDetails', process.env.VERBOSE === 'true' ? e : "");
         throw e;
     })
@@ -59,7 +59,7 @@ var getBookDetails = async (url, name) => {
 
 var getBookUrl = async (url, name) => {
     let result
-    await parser.getBookUrl(url, config.DO_SCREEN_AMAZON && name).then(res=>result=res.data).catch(e => { console.error('[inquirer.getBookUrl] Error for getBookUrl', process.env.VERBOSE === 'true' ? e : ""); throw e; })
+    await parser.getBookUrl(url, config.DO_SCREEN_AMAZON && name).then(res => result = res.data).catch(e => { console.error('[inquirer.getBookUrl] Error for getBookUrl', process.env.VERBOSE === 'true' ? e : ""); throw e; })
     if (process.env.EXTENDEDLOGS === 'true') console.log('[inquirer.getBookUrl] book url: ', result)
     return result
 }
@@ -76,7 +76,7 @@ var processBook = async (book, keyword) => {
 }
 
 
-var processKeyword = async (keyword, goToProgressBarState = () => {}, keywordIndex = 0, totalKeywords = 1) => {
+var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIndex = 0, totalKeywords = 1) => {
     console.log('[inquirer.processKeyword] keyword: ', keyword)
     let audibleUrl = config.AUDIBLE_URL.replace('{searchString}', encodeURIComponent(keyword))
 
@@ -86,7 +86,7 @@ var processKeyword = async (keyword, goToProgressBarState = () => {}, keywordInd
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
         let book = books[bookIndex]
         await processBook(book, keyword).catch(e => { console.error('[inquirer.processKeyword] processKeywordError for book: ', books[bookIndex].titleAU, '\n', e); throw e; })
-        goToProgressBarState((bookIndex+1)/(books.length*totalKeywords)*10)
+        goToProgressBarState((bookIndex + 1) / (books.length * totalKeywords) * 10)
     }
     output[keyword]['competitors'] = booksAndCompetitor.competitorsAU
 }
@@ -135,8 +135,8 @@ var processOutput = (myName) => {
             let splittedKeywordTemp = keyword.toLowerCase().split(" ")
             let splittedKeyword = []
             splittedKeywordTemp.map(word => splittedKeyword.push(pluralize.singular(word.replace(/[&/\\#,+()$~%.'":*?<>{}]/g, ''))))
-            let bookInfo = [title ? title :'',subTitle ? subTitle:'',narrator ? narrator:'',author ? author:''].join(" ").replace(/[&/\\#,+()$~%.'":*?<>{}]/g, '')
-            let bookInfoSingular =[]
+            let bookInfo = [title ? title : '', subTitle ? subTitle : '', narrator ? narrator : '', author ? author : ''].join(" ").replace(/[&/\\#,+()$~%.'":*?<>{}]/g, '')
+            let bookInfoSingular = []
             bookInfo.split(" ").map(word => bookInfoSingular.push(pluralize.singular(word)))
             bookInfoSingular = bookInfoSingular.join(" ").toLowerCase()
             if (splittedKeyword.every(token => bookInfoSingular.includes(token))) {
@@ -160,19 +160,21 @@ var processOutput = (myName) => {
 }
 
 
-var main = async (name, keywords = [], goToProgressBarState = () => {}) => {
+var main = async (name, keywords = [], goToProgressBarState = () => { }) => {
     await setConfig()
     //await setKeywords()
     let errorKs = []
     let keywordPromises = []
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
         let keyword = keywords[keywordIndex]
-        keywordPromises.push(processKeyword(keyword,goToProgressBarState,keywordIndex,keywords.length).catch((e) => {
+        //keywordPromises.push(
+        await processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length).catch((e) => {
             console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
             errorKs.push(keyword)
-        }))
+        })
+        //)
     }
-    await Promise.all(keywordPromises)
+    //await Promise.all(keywordPromises)
     let stats = processOutput(name)
     if (stats) {
         Object.keys(stats).map(k => {
