@@ -19,7 +19,10 @@ class Form extends Component {
             <br />
             <div>
                 <input type="submit" value="Inquire" onClick={this.props.inquire} />
-                <input type="submit" value="Test" onClick={this.props.test} />
+                <input type="submit" value="TestGET" onClick={()=>axios.get(process.env.REACT_APP_SERVER_URL+'/test')} />
+                <input type="submit" value="TestPOST" onClick={()=>axios.post(process.env.REACT_APP_SERVER_URL+'/test')} />
+                <input type="submit" value="TestPUT" onClick={()=>axios.put(process.env.REACT_APP_SERVER_URL+'/test')} />
+                <input type="submit" value="TestDELETE" onClick={()=>axios.delete(process.env.REACT_APP_SERVER_URL+'/test')} />
             </div>
         </>
     );

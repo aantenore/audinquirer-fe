@@ -94,7 +94,7 @@ class App extends Component {
         )
           :
           <div>
-            <Form handleTextChange={this.handleTextChange} inquire={this.inquire} test = {()=>axios.get(process.env.REACT_APP_SERVER_URL+'/test')}/>
+            <Form handleTextChange={this.handleTextChange} inquire={this.inquire}/>
             <UploadExcel setExistingData={this.setExistingData}></UploadExcel>
             {this.state.showLog && <div className="centeredDiv" style={{ backgroundColor: '#242424' }}>
               <Console logs={this.state.logs} variant="dark" />
