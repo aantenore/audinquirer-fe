@@ -10,7 +10,6 @@ import { ProgressBar } from 'react-bootstrap';
 import { Hook, Console, Decode } from 'console-feed';
 import inquirer from './core/inquirer/inquirer'
 import UploadExcel from './components/UploadExcel';
-import axios from 'axios';
 
 class App extends Component {
 
