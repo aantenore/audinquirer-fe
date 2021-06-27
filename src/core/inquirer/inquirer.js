@@ -1,5 +1,6 @@
 import configurator from '../configurator/configurator'
 import parser from '../parser/parser'
+import pluralize from 'pluralize'
 
 let statTemplate = {
     A: 0,
@@ -131,8 +132,13 @@ var processOutput = (myName) => {
             } else if (bsrLessThan30k) {
                 stat.F.push(audibleLink)
             }
-            let splittedKeyword = keyword.toLowerCase().split(" ")
-            if (splittedKeyword.every(token => title ? title.toLowerCase().includes(token) : false || subTitle ? subTitle.toLowerCase().includes(token) : false || narrator ? narrator.toLowerCase().includes(token) : false || author ? author.toLowerCase().includes(token) : false)) {
+            let splittedKeywordTemp = keyword.toLowerCase().split(" ")
+            let splittedKeyword = []
+            splittedKeywordTemp.map(word => splittedKeyword.push(pluralize.singular(word.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, ''))))
+            let bookInfo = [title ? title :'',subTitle ? subTitle:'',narrator ? narrator:'',author ? author:''].join(" ").replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '')
+            let bookInfoSingular =[]
+            bookInfo.split(" ").map(word => bookInfoSingular.push(pluralize.singular(word)))
+            if (splittedKeywordTemp.every(token => bookInfoSingular.join(" ").toLowerCase().includes(token))) {
                 stat.G++
             }
             if (bsrLessThan30k && title === keyword) {
