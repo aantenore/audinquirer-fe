@@ -132,15 +132,17 @@ var processOutput = (myName) => {
             } else if (bsrLessThan30k) {
                 stat.F.push(audibleLink)
             }
-            let splittedKeywordTemp = keyword.toLowerCase().split(" ")
-            let splittedKeyword = []
-            splittedKeywordTemp.map(word => splittedKeyword.push(pluralize.singular(word.replace(/[&/\\#,+()$~%.'":*?<>{}]/g, ''))))
-            let bookInfo = [title ? title : '', subTitle ? subTitle : '', narrator ? narrator : '', author ? author : ''].join(" ").replace(/[&/\\#,+()$~%.'":*?<>{}]/g, '')
-            let bookInfoSingular = []
-            bookInfo.split(" ").map(word => bookInfoSingular.push(pluralize.singular(word)))
-            bookInfoSingular = bookInfoSingular.join(" ").toLowerCase()
-            if (splittedKeyword.every(token => bookInfoSingular.includes(token))) {
-                stat.G++
+            if (bsrLessThan30k) {
+                let splittedKeywordTemp = keyword.toLowerCase().split(" ")
+                let splittedKeyword = []
+                splittedKeywordTemp.map(word => splittedKeyword.push(pluralize.singular(word.replace(/[&/\\#,+()$~%.'":*?<>{}]/g, ''))))
+                let bookInfo = [title ? title : '', subTitle ? subTitle : '', narrator ? narrator : '', author ? author : ''].join(" ").replace(/[&/\\#,+()$~%.'":*?<>{}]/g, '')
+                let bookInfoSingular = []
+                bookInfo.split(" ").map(word => bookInfoSingular.push(pluralize.singular(word)))
+                bookInfoSingular = bookInfoSingular.join(" ").toLowerCase()
+                if (splittedKeyword.every(token => bookInfoSingular.includes(token))) {
+                    stat.G++
+                }
             }
             if (bsrLessThan30k && title === keyword) {
                 stat.H++
