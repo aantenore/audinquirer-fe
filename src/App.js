@@ -66,7 +66,6 @@ class App extends Component {
   handleTextChange = (e) => {
     let newState = {}
     newState[e.target.id] = e.target.value
-    console.log(newState)
     this.setState(newState)
   }
 
