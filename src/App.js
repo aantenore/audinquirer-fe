@@ -10,6 +10,7 @@ import { ProgressBar } from 'react-bootstrap';
 import { Hook, Console, Decode } from 'console-feed';
 import inquirer from './core/inquirer/inquirer'
 import UploadExcel from './components/UploadExcel';
+import axios from 'axios';
 
 class App extends Component {
 
@@ -93,7 +94,7 @@ class App extends Component {
         )
           :
           <div>
-            <Form handleTextChange={this.handleTextChange} inquire={this.inquire} />
+            <Form handleTextChange={this.handleTextChange} inquire={this.inquire} test = {()=>axios.get(process.env.REACT_APP_SERVER_URL+'/test')}/>
             <UploadExcel setExistingData={this.setExistingData}></UploadExcel>
             {this.state.showLog && <div className="centeredDiv" style={{ backgroundColor: '#242424' }}>
               <Console logs={this.state.logs} variant="dark" />
