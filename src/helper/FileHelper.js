@@ -11,9 +11,11 @@ class FileHelper {
                 let candidateSheetName = keyword.length > 25 ? keyword.slice(0, 25) : keyword
                 let sheetNameOk = false
                 let sheetName = candidateSheetName
+                let i = 0
                 while (!sheetNameOk) {
                     if (file.SheetNames.includes(sheetName)) {
-                        sheetName = "_" + sheetName
+                        sheetName = sheetName+i
+                        i=i+1
                     } else {
                         sheetNameOk = true
                     }
