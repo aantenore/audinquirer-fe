@@ -22,5 +22,29 @@
         "M": "Books published more than 1 month ago with BSR under 30k"
     },
     "days": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"],
-    "excel_header":["KEYWORD","DAY","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]
+    "excel_header":["KEYWORD","DAY","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","RESULTS",""],
+    "summary_map":{
+        "A": "avg",
+        "B": "avg",
+        "D": "avg",
+        "C": "incr",
+        "E": "avg",
+        "G": "avg",
+        "H": "lastData",
+        "I": "lastData",
+        "L": "avg",
+        "M": "avg"
+    },
+    "translate_summary":{
+        "A": "Average of books with BSR under 30k",
+        "B": "Average books with BSR under 15k",
+        "D": "Average publications in the last 30 days",
+        "C": "Average increase of competitors",
+        "E": "Average number of books by other self publishers with bsr under 30k",
+        "G": "Average of books with BSR under 30k with key word in title or subtitle",
+        "H": "Final number of famous competitors monopolizing kw",
+        "I": "Number of my books present among the results on the last day of analysis",
+        "L": "Average of competing books with less than 100 reviews",
+        "M": "Average of books published more than 1 month with BSR under 30k"
+    }
 }
