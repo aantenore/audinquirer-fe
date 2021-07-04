@@ -12,7 +12,8 @@ let statTemplate = {
     H: 0,
     I: 0,
     L: 0,
-    F: []
+    F: [],
+    M:0
 }
 
 var config = {}
@@ -152,6 +153,9 @@ var processOutput = (myName) => {
             }
             if (reviewsNumber < 100 && reviewsNumber >= 0) {
                 stat.L++
+            }
+            if(bsrLessThan30k && (Date.now() - releaseDate > day30)){
+                stat.M++
             }
             return bookId
         })

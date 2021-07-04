@@ -18,7 +18,8 @@
         "H": "Competitors monopolizing the Key Word",
         "I": "Number of my books among the results",
         "L": "Books with less than 100 reviews",
-        "F": "links"
+        "F": "links",
+        "M": "Books published more than 1 month ago with BSR under 30k"
     },
     "days": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"],
     "excel_header":["KEYWORD","DAY","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]
