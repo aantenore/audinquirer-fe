@@ -19,7 +19,7 @@ class App extends Component {
     loggedIn: false,
     progress: 0,
     logs: [],
-    existingRows: []
+    existingRows: {}
   }
 
   setExistingData = (existingRows) => {
@@ -44,7 +44,7 @@ class App extends Component {
               if (errorK === k) {
                 alert('Error, no report can be downloaded')
               } else {
-                FileHelper.writeExcel(ExcelHelper.fillExcel(dataRes), config.EXCEL_FILE_PATH, () => console.log('DONE!'), () => console.log('ERROR WRITING THE EXCEL!'))
+                FileHelper.writeExcel(config.excel_header, ExcelHelper.fillExcel(dataRes), new Date().toISOString().slice(0,10)+"_"+config.EXCEL_FILE_NAME, () => console.log('DONE!'), (e) => console.log('ERROR WRITING THE EXCEL!',e))
               }
             })
             .catch(err => {

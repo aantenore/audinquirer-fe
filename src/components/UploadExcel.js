@@ -4,7 +4,7 @@ import * as xlsx from 'xlsx'
 class UploadExcel extends Component {
 
     readExcel = (file) => {
-        let data = []
+        let data = {}
         const reader = new FileReader();
         reader.onload = (e) => {
             var bstr = e.target.result;
@@ -13,8 +13,12 @@ class UploadExcel extends Component {
             for (let i = 0; i < sheets.length; i++) {
                 const temp = xlsx.utils.sheet_to_json(
                     wb.Sheets[wb.SheetNames[i]])
+                let keyword = temp[0]['KEYWORD']
                 temp.forEach((res) => {
-                    data.push(res)
+                    if(!data[keyword]){
+                        data[keyword]=[]
+                    }
+                    data[keyword].push(res)
                 })
             }
         }

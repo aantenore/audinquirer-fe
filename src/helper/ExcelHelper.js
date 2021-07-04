@@ -9,9 +9,9 @@ class ExcelHelper {
         let statTemplate = data.statTemplate
         let config = data.config
 
-        let result = []
-        rows = rows ? rows : []
-        let existingKeywords = rows.length > 0 ? Object.keys(rows[0]).filter(k => k.trim() !== "") : []
+        let resultAllK = {}
+        rows = rows ? rows : {}
+        let existingKeywords = Object.keys(rows)
         let commonKeywords = []
         let allKeywords = [...existingKeywords]
         keywords.map(keyword => {
@@ -23,46 +23,65 @@ class ExcelHelper {
             }
             return keyword
         })
-        Object.keys(statTemplate).map((stat, rowIndex) => {
-            if (stat !== "F") {
-                let item = { '': config.translate[stat] }
-                allKeywords.map(key => {
-                    if (stats[key] && !errorKs.includes(key)) {
-                        if (commonKeywords.includes(key)) {
-                            //append data
-                            let existingData = rows[rowIndex][key]
-                            item[key] = existingData + '-' + stats[key][stat]
-                        } else {
-                            //new
-                            item[key] = stats[key][stat]
+        let linksDownloaded = false
+        allKeywords.map(key => {
+            let resultSingleK = []
+            
+            Object.keys(statTemplate).map((stat, rowIndex) => {
+                let infoWritten = false
+                let item = {}
+                if(rowIndex===0){
+                    item['KEYWORD']=key
+                }
+                if (stat !== "F") {
+                    item['DAY'] = config.translate[stat]
+                    config.days.map(day => {
+                        let existingData = (rows[key]&&rows[key][rowIndex])?rows[key][rowIndex][day]:undefined
+                        if (stats[key] && !errorKs.includes(key)) {
+                            //day after
+                            if(infoWritten){
+                                item[day] = ''
+                            }
+                            //appenda data fro new day
+                            else if (existingData !== 0 && (!existingData || existingData.toString().trim().length === 0) && !infoWritten) {
+                                item[day] = stats[key][stat]
+                                infoWritten = true
+                            //previous day
+                            }else{
+                                //report same data in input
+                                item[day] = existingData
+                            }
+                        //keyword not in input list but present in excel
+                        } else if (!stats[key] && !errorKs.includes(key)) {
+                            //report same data in input
+                            item[day] = existingData
                         }
-                    } else if (existingKeywords.includes(key)) {
-                        //report same data in input
-                        let existingData = rows[rowIndex][key]
-                        item[key] = existingData
-                    }
-                    return key
-                })
-                result.push(item)
-            } else {
-                let links = ''
-                keywords.map(key => {
-                    if (!errorKs.includes(key)) {
-                        links = links.concat('keyword: ', key, '\n')
-                        if (stats[key] && stats[key][stat]) {
-                            stats[key][stat].map(link => {
-                                links = links.concat('link: ', link, '\n')
-                                return link
-                            })
+                        return day
+                    })
+                    resultSingleK.push(item)
+                } else if(!linksDownloaded){
+                    let links = ''
+                    keywords.map(key => {
+                        if (!errorKs.includes(key)) {
+                            links = links.concat('keyword: ', key, '\n')
+                            if (stats[key] && stats[key][stat] && !errorKs.includes(key)) {
+                                stats[key][stat].map(link => {
+                                    links = links.concat('link: ', link, '\n')
+                                    return link
+                                })
+                            }
                         }
-                    }
-                    return key
-                })
-                ExcelHelper.writeDownloadLinksFile(links)
-            }
-            return stat
+                        return key
+                    })
+                    ExcelHelper.writeDownloadLinksFile(links, key)
+                    linksDownloaded = true
+                }
+                return stat
+            })
+            resultAllK[key] = resultSingleK
+            return key
         })
-        return result
+        return resultAllK
     }
 
 
@@ -76,7 +95,7 @@ class ExcelHelper {
             element.setAttribute("id", "linksDownloadId")
             const file = new Blob([links], { type: 'text/plain' })
             element.href = URL.createObjectURL(file)
-            element.download = "links.txt"
+            element.download = "bookLinkstoCheckForSelfPublishing.txt"
             document.body.appendChild(element)
             element.click()
         }
