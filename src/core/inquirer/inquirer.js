@@ -2,20 +2,8 @@ import configurator from '../configurator/configurator'
 import parser from '../parser/parser'
 import pluralize from 'pluralize'
 
-let statTemplate = {
-    A: 0,
-    B: 0,
-    C: 0,
-    D: 0,
-    E: 0,
-    G: 0,
-    H: 0,
-    I: 0,
-    L: 0,
-    F: [],
-    M: 0
-}
 
+let statTemplate = {}
 var config = {}
 var output = {}
 
@@ -171,6 +159,7 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }) => {
     //await setKeywords()
     let errorKs = []
     let keywordPromises = []
+    statTemplate = {...config.template}
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
         let keyword = keywords[keywordIndex]
         //keywordPromises.push(

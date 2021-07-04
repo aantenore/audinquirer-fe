@@ -26,7 +26,6 @@ class ExcelHelper {
         let linksDownloaded = false
         allKeywords.map(key => {
             let resultSingleK = []
-
             Object.keys(statTemplate).map((stat, rowIndex) => {
                 let infoWritten = false
                 let item = {}
