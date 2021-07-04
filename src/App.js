@@ -33,7 +33,7 @@ class App extends Component {
     if (name?.trim() !== "" && (keywords?.trim().indexOf(',') > 0 || (keywords?.trim() !== "" && keywords?.trim().indexOf(',') < 0))) {
       let splittedKeywords = keywords.split(',').filter(k => k.trim() !== "");//.map(k => encodeURIComponent(k));
       //let url = process.env.REACT_APP_SERVER_URL + "/inquire?n=" + name + "&k=" + JSON.stringify(splittedKeywords)
-      this.setState({ spinnerActive: true }, () => {
+      this.setState({ spinnerActive: true, name: undefined, keywords: undefined }, () => {
         this.setState({progress:0}, async () => {
           await inquirer.inquire(name, splittedKeywords, this.goToProgressBar)
             .then(dataRes => {
