@@ -133,10 +133,10 @@ var processOutput = (myName) => {
                     stat.G++
                 }
             }
-            if (bsrLessThan30k && title === keyword) {
+            if (bsrLessThan30k && title && keyword && title.toLowerCase() === keyword.toLowerCase()) {
                 stat.H++
             }
-            if (author === myName) {
+            if (author && myName && author.toLowerCase() === myName.toLowerCase()) {
                 stat.I++
             }
             if (reviewsNumber < 100 && reviewsNumber >= 0) {
@@ -159,7 +159,7 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }) => {
     //await setKeywords()
     let errorKs = []
     let keywordPromises = []
-    statTemplate = {...config.template}
+    statTemplate = { ...config.template }
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
         let keyword = keywords[keywordIndex]
         //keywordPromises.push(
