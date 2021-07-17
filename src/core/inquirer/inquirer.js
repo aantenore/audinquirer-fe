@@ -90,15 +90,20 @@ var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIn
 var processOutput = async (myName) => {
 
     let result = {}
-
-    for(var keyword in Object.keys(output)) {
+    console.log('output: ', output)
+    let keys = Object.keys(output)
+    for (var i = 0; i < keys.length; i++) {
+        let keyword = keys[i]
+        console.log('k', keyword, keys)
         let stat = { ...statTemplate }
         let day30 = 2592000000
         let booksAndCompetitor = output[keyword]
         let tempCompetitors = Array.from(booksAndCompetitor['competitors'] ? booksAndCompetitor['competitors'].replace('.', '').replace(',', '').matchAll(/[0-9]+/g) : [])
         let competitors = (tempCompetitors && tempCompetitors.length > 0) ? parseInt(tempCompetitors[tempCompetitors.length - 1]) : 0
         stat.C = competitors
-        for (var bookId in Object.keys(booksAndCompetitor).filter(key => key !== 'competitors')) {
+        let bookIds = Object.keys(booksAndCompetitor).filter(key => key !== 'competitors')
+        for (var j = 0; j < bookIds.length; j++) {
+            let bookId = bookIds[j]
             let bookDetails = booksAndCompetitor[bookId]
             let title = bookDetails['titleAU']
             let bsrTemp = bookDetails['bsrAM'] && bookDetails['bsrAM'][0] ? bookDetails['bsrAM'][0].match(/(?<=#)(.*)(?= in Audible Books & Originals \()/) : []
