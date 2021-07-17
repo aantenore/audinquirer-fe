@@ -94,7 +94,6 @@ var processOutput = async (myName) => {
     let keys = Object.keys(output)
     for (var i = 0; i < keys.length; i++) {
         let keyword = keys[i]
-        console.log('k', keyword, keys)
         let stat = { ...statTemplate }
         let day30 = 2592000000
         let booksAndCompetitor = output[keyword]
