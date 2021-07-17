@@ -98,7 +98,7 @@ var processOutput = (myName) => {
         let tempCompetitors = Array.from(booksAndCompetitor['competitors'] ? booksAndCompetitor['competitors'].replace('.', '').replace(',', '').matchAll(/[0-9]+/g) : [])
         let competitors = (tempCompetitors && tempCompetitors.length > 0) ? parseInt(tempCompetitors[tempCompetitors.length - 1]) : 0
         stat.C = competitors
-        Object.keys(booksAndCompetitor).filter(key => key !== 'competitors').map(bookId => {
+        Object.keys(booksAndCompetitor).filter(key => key !== 'competitors').map(async bookId => {
             let bookDetails = booksAndCompetitor[bookId]
             let title = bookDetails['titleAU']
             let bsrTemp = bookDetails['bsrAM'] && bookDetails['bsrAM'][0] ? bookDetails['bsrAM'][0].match(/(?<=#)(.*)(?= in Audible Books & Originals \()/) : []
@@ -124,7 +124,7 @@ var processOutput = (myName) => {
             }
             if (bsrLessThan30k) {
                 if(!isSelfPublished){
-                    let bookHaveBulletPointInDescriptionObj = await getBookHaveBulletPointInDescription(book.audibleUrlAU)
+                    let bookHaveBulletPointInDescriptionObj = await getBookHaveBulletPointInDescription(bookDetails.audibleUrlAU)
                     isSelfPublished = bookHaveBulletPointInDescriptionObj.bookHaveBulletPointInDescription
                 }
                 if(isSelfPublished)
