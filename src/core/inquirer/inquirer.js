@@ -105,6 +105,9 @@ var processOutput = (myName) => {
             let narrator = bookDetails['narratorAM']
             let subTitle = bookDetails['subTitleAU']
             let isSelfPublished = publisher && publisher ? publisher.includes(author) : false
+            if(!isSelfPublished){
+                isSelfPublished = bookDetails['haveBulletPointInDescription']
+            }
             let audibleLink = bookDetails['audibleUrlAU']
             let bsrLessThan30k = bsr < 30000 && bsr >= 0
             if (bsrLessThan30k) {
