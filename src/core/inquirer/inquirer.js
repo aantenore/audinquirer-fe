@@ -87,18 +87,18 @@ var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIn
 }
 
 
-var processOutput = (myName) => {
+var processOutput = async (myName) => {
 
     let result = {}
 
-    Object.keys(output).map(keyword => {
+    await Promise.all(Object.keys(output).map(async keyword => {
         let stat = { ...statTemplate }
         let day30 = 2592000000
         let booksAndCompetitor = output[keyword]
         let tempCompetitors = Array.from(booksAndCompetitor['competitors'] ? booksAndCompetitor['competitors'].replace('.', '').replace(',', '').matchAll(/[0-9]+/g) : [])
         let competitors = (tempCompetitors && tempCompetitors.length > 0) ? parseInt(tempCompetitors[tempCompetitors.length - 1]) : 0
         stat.C = competitors
-        Object.keys(booksAndCompetitor).filter(key => key !== 'competitors').map(async bookId => {
+        await Promise.all(Object.keys(booksAndCompetitor).filter(key => key !== 'competitors').map(async bookId => {
             let bookDetails = booksAndCompetitor[bookId]
             let title = bookDetails['titleAU']
             let bsrTemp = bookDetails['bsrAM'] && bookDetails['bsrAM'][0] ? bookDetails['bsrAM'][0].match(/(?<=#)(.*)(?= in Audible Books & Originals \()/) : []
@@ -126,6 +126,7 @@ var processOutput = (myName) => {
                 if(!isSelfPublished){
                     let bookHaveBulletPointInDescriptionObj = await getBookHaveBulletPointInDescription(bookDetails.audibleUrlAU)
                     isSelfPublished = bookHaveBulletPointInDescriptionObj.bookHaveBulletPointInDescription
+                    console.log(isSelfPublished)
                 }
                 if(isSelfPublished)
                 stat.E++
@@ -157,10 +158,10 @@ var processOutput = (myName) => {
                 stat.M++
             }
             return bookId
-        })
+        }))
         result[keyword] = stat
         return keyword
-    })
+    }))
     return result
 }
 
@@ -181,7 +182,7 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }) => {
         //)
     }
     //await Promise.all(keywordPromises)
-    let stats = processOutput(name)
+    let stats = await processOutput(name)
     if (stats) {
         Object.keys(stats).map(k => {
             if (!keywords.includes(k)) {
