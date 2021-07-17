@@ -53,6 +53,12 @@ var getBookUrl = async (url, name) => {
     return result
 }
 
+var getBookHaveBulletPointInDescription = async (url) =>{
+    let result
+    await parser.getBookHaveBulletPointInDescription(url).then(res => result = res.data).catch(e => { console.error('[inquirer.getBookHaveBulletPointInDescription] Error for getBookHaveBulletPointInDescription', process.env.VERBOSE === 'true' ? e : ""); throw e; })
+    if (process.env.EXTENDEDLOGS === 'true') console.log('[inquirer.getBookHaveBulletPointInDescription] bookHaveBulletPointInDescription: ', result)
+    return result
+}
 
 var processBook = async (book, keyword) => {
     let bookId = book.titleAU + ((book.subTitleAU) ? (' ' + book.subTitleAU) : '') + ((book.authorAU) ? (' ' + book.authorAU) : '')
@@ -60,7 +66,7 @@ var processBook = async (book, keyword) => {
     let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId)).replace('{searchType}', 'audible')
     let amazonBookUrl = await getBookUrl(amazonSearchUrl, `Search results on Amazon: ${book.titleAU}`)
     let details = await getBookDetails(amazonBookUrl, `Book page on Amazon: ${book.titleAU}`)
-    let bookHaveBulletPointInDescription = parser.getBookHaveBulletPointInDescription(book.audibleUrlAU)
+    let bookHaveBulletPointInDescription = await getBookHaveBulletPointInDescription(book.audibleUrlAU)
     book.bookHaveBulletPointInDescription = bookHaveBulletPointInDescription
     output[keyword] = output[keyword] ? output[keyword] : {}
     output[keyword][bookId] = { ...details, ...book }
