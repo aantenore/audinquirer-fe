@@ -66,8 +66,6 @@ var processBook = async (book, keyword) => {
     let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId)).replace('{searchType}', 'audible')
     let amazonBookUrl = await getBookUrl(amazonSearchUrl, `Search results on Amazon: ${book.titleAU}`)
     let details = await getBookDetails(amazonBookUrl, `Book page on Amazon: ${book.titleAU}`)
-    let bookHaveBulletPointInDescriptionObj = await getBookHaveBulletPointInDescription(book.audibleUrlAU)
-    book.bookHaveBulletPointInDescription = bookHaveBulletPointInDescriptionObj?bookHaveBulletPointInDescriptionObj.bookHaveBulletPointInDescription:false
     output[keyword] = output[keyword] ? output[keyword] : {}
     output[keyword][bookId] = { ...details, ...book }
 }
@@ -113,9 +111,6 @@ var processOutput = (myName) => {
             let narrator = bookDetails['narratorAM']
             let subTitle = bookDetails['subTitleAU']
             let isSelfPublished = publisher && publisher ? publisher.includes(author) : false
-            if(!isSelfPublished){
-                isSelfPublished = bookDetails['haveBulletPointInDescription']
-            }
             let audibleLink = bookDetails['audibleUrlAU']
             let bsrLessThan30k = bsr < 30000 && bsr >= 0
             if (bsrLessThan30k) {
@@ -127,7 +122,12 @@ var processOutput = (myName) => {
             if (Date.now() - releaseDate < day30) {
                 stat.D++
             }
-            if (bsrLessThan30k && isSelfPublished) {
+            if (bsrLessThan30k) {
+                if(!isSelfPublished){
+                    let bookHaveBulletPointInDescriptionObj = await getBookHaveBulletPointInDescription(book.audibleUrlAU)
+                    isSelfPublished = bookHaveBulletPointInDescriptionObj.bookHaveBulletPointInDescription
+                }
+                if(isSelfPublished)
                 stat.E++
             } else if (bsrLessThan30k) {
                 stat.F.push(audibleLink)
