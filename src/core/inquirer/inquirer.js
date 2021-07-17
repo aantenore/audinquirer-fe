@@ -66,8 +66,8 @@ var processBook = async (book, keyword) => {
     let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId)).replace('{searchType}', 'audible')
     let amazonBookUrl = await getBookUrl(amazonSearchUrl, `Search results on Amazon: ${book.titleAU}`)
     let details = await getBookDetails(amazonBookUrl, `Book page on Amazon: ${book.titleAU}`)
-    let bookHaveBulletPointInDescription = await getBookHaveBulletPointInDescription(book.audibleUrlAU)
-    book.bookHaveBulletPointInDescription = bookHaveBulletPointInDescription
+    let bookHaveBulletPointInDescriptionObj = await getBookHaveBulletPointInDescription(book.audibleUrlAU)
+    book.bookHaveBulletPointInDescription = bookHaveBulletPointInDescriptionObj?bookHaveBulletPointInDescriptionObj.bookHaveBulletPointInDescription:false
     output[keyword] = output[keyword] ? output[keyword] : {}
     output[keyword][bookId] = { ...details, ...book }
 }
