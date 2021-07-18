@@ -19,7 +19,8 @@ class App extends Component {
     loggedIn: false,
     progress: 0,
     logs: [],
-    existingRows: {}
+    existingRows: {},
+    message: ''
   }
 
   setExistingData = (existingRows) => {
@@ -35,7 +36,7 @@ class App extends Component {
       //let url = process.env.REACT_APP_SERVER_URL + "/inquire?n=" + name + "&k=" + JSON.stringify(splittedKeywords)
       this.setState({ spinnerActive: true, name: undefined, keywords: undefined }, () => {
         this.setState({progress:0}, async () => {
-          await inquirer.inquire(name, splittedKeywords, this.goToProgressBar)
+          await inquirer.inquire(name, splittedKeywords, this.goToProgressBar, (message)=>this.setState({message:message}))
             .then(dataRes => {
               dataRes.rows = this.state.existingRows
               let config = dataRes.config
@@ -89,6 +90,7 @@ class App extends Component {
             <Spinner animation="grow" variant="light" />
             <Spinner animation="grow" variant="dark" />
             <ProgressBar animated variant="success" now={this.state.progress} />
+            <div className="messageDiv" >{this.state.message}</div>
           </>
         )
           :

@@ -60,9 +60,10 @@ var getBookHaveBulletPointInDescription = async (url) => {
     return result
 }
 
-var processBook = async (book, keyword) => {
+var processBook = async (book, keyword, setMessage) => {
     let bookId = book.titleAU + ((book.subTitleAU) ? (' ' + book.subTitleAU) : '') + ((book.authorAU) ? (' ' + book.authorAU) : '')
     console.log('[inquirer.processBook] book: ', bookId)
+    setMessage('Processing book: '+bookId)
     let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId)).replace('{searchType}', 'audible')
     let amazonBookUrl = await getBookUrl(amazonSearchUrl, `Search results on Amazon: ${book.titleAU}`)
     let details = await getBookDetails(amazonBookUrl, `Book page on Amazon: ${book.titleAU}`)
@@ -71,8 +72,9 @@ var processBook = async (book, keyword) => {
 }
 
 
-var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIndex = 0, totalKeywords = 1) => {
+var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIndex = 0, totalKeywords = 1, setMessage) => {
     console.log('[inquirer.processKeyword] keyword: ', keyword)
+    setMessage('Processing keyword: '+keyword)
     let audibleUrl = config.AUDIBLE_URL.replace('{searchString}', encodeURIComponent(keyword))
 
     let booksAndCompetitor = await getBooks(audibleUrl, `Search results on Audible: ${keyword}`)
@@ -80,7 +82,7 @@ var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIn
 
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
         let book = books[bookIndex]
-        await processBook(book, keyword).catch(e => { console.error('[inquirer.processKeyword] processKeywordError for book: ', books[bookIndex].titleAU, '\n', e); throw e; })
+        await processBook(book, keyword, setMessage).catch(e => { console.error('[inquirer.processKeyword] processKeywordError for book: ', books[bookIndex].titleAU, '\n', e); throw e; })
         goToProgressBarState((bookIndex + 1) / (books.length * totalKeywords) * 10)
     }
     output[keyword]['competitors'] = booksAndCompetitor.competitorsAU
@@ -167,7 +169,7 @@ var processOutput = async (myName) => {
 }
 
 
-var main = async (name, keywords = [], goToProgressBarState = () => { }) => {
+var main = async (name, keywords = [], goToProgressBarState = () => { }, setMessage = () => {}) => {
     await setConfig()
     //await setKeywords()
     let errorKs = []
@@ -176,13 +178,14 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }) => {
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
         let keyword = keywords[keywordIndex]
         //keywordPromises.push(
-        await processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length).catch((e) => {
+        await processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
             console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
             errorKs.push(keyword)
         })
         //)
     }
     //await Promise.all(keywordPromises)
+    setMessage('Finalizing, please wait some minutes')
     let stats = await processOutput(name)
     if (stats) {
         Object.keys(stats).map(k => {
