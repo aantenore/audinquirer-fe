@@ -14,11 +14,11 @@ code {
 
 .absoluteHorizontalCenteredDiv{
   position: absolute;
-  right: 45vw;
+  right: 45%;
 }
 
 .messageDiv{
     display:block;
-    width:15vw;
+    width:22vw;
     word-wrap:break-word;
 }
