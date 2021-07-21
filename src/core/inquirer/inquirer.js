@@ -128,7 +128,7 @@ var processOutput = async (myName) => {
             if (Date.now() - releaseDate < day30) {
                 stat.D++
             }
-            if (bsrLessThan30k) {
+            /*if (bsrLessThan30k) {
                 if (!isSelfPublished) {
                     let bookHaveBulletPointInDescriptionObj = await getBookHaveBulletPointInDescription(bookDetails.audibleUrlAU)
                     isSelfPublished = bookHaveBulletPointInDescriptionObj.bookHaveBulletPointInDescription
@@ -137,11 +137,11 @@ var processOutput = async (myName) => {
                     stat.E++
             } else if (bsrLessThan30k) {
                 stat.F.push(audibleLink)
-            }
+            }*/
             if (bsrLessThan30k) {
                 let splittedKeywordTemp = keyword.toLowerCase().split(" ")
                 let splittedKeyword = []
-                splittedKeywordTemp.map(word => splittedKeyword.push(pluralize.singular(word.replace(/[&/\\#,+()$~%.'":*?<>{}]/g, ''))))
+                splittedKeywordTemp.map(word => splittedKeyword.push(pluralize.singular(word.replace(/[&/\\#,+()$~%.'":*?<>{}]/g, ' '))))
                 let bookInfo = [title ? title : '', subTitle ? subTitle : '', narrator ? narrator : '', author ? author : ''].join(" ").replace(/[&/\\#,+()$~%.'":*?<>{}]/g, '')
                 let bookInfoSingular = []
                 bookInfo.split(" ").map(word => bookInfoSingular.push(pluralize.singular(word)))

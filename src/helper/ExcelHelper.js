@@ -32,7 +32,7 @@ class ExcelHelper {
                 if (rowIndex === 0) {
                     item['KEYWORD'] = key
                 }
-                if (stat !== "F") {
+                if (stat !== "F" && stat !== "E") {
                     item['DAY'] = config.translate[stat]
                     item[''] = config.translate_summary[stat] 
                     let summary = {
