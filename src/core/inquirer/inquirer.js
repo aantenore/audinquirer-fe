@@ -110,8 +110,13 @@ var processOutput = async (myName) => {
             let bsrTemp = bookDetails['bsrAM'] && bookDetails['bsrAM'][0] ? bookDetails['bsrAM'][0].match(/(?<=#)(.*)(?= in Audible Books & Originals \()/) : []
             let bsr = bsrTemp && bsrTemp.length > 0 ? parseInt(bsrTemp[0].replace('.', '').replace(',', '')) : -1
             let releaseDate = Date.parse(bookDetails['releaseDateAM'])
-            let tempReviewsNumber = bookDetails['reviewsAU'] ? bookDetails['reviewsAU'].match(/[0-9]+/) : []
-            let reviewsNumber = tempReviewsNumber && tempReviewsNumber.length > 0 ? parseInt(tempReviewsNumber[0]) : -1
+            let reviewsNumber = -1
+            if(bookDetails['reviewsAU'] === 'Not rated yet'){
+                reviewsNumber = 0
+            }else{
+                let tempReviewsNumber = bookDetails['reviewsAU'] ? bookDetails['reviewsAU'].match(/[0-9]+/) : []
+                reviewsNumber = tempReviewsNumber && tempReviewsNumber.length > 0 ? parseInt(tempReviewsNumber[0]) : -1
+            }
             let author = bookDetails['authorAM']
             let publisher = bookDetails['publisherAM']
             let narrator = bookDetails['narratorAM']
