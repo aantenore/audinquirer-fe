@@ -74,7 +74,7 @@ class ExcelHelper {
                         return day
                     })
                     resultSingleK.push(item)
-                } else if (!linksDownloaded) {
+                } /*else if (!linksDownloaded) {
                     let links = ''
                     keywords.map(key => {
                         if (!errorKs.includes(key)) {
@@ -90,7 +90,7 @@ class ExcelHelper {
                     })
                     ExcelHelper.writeDownloadLinksFile(links, key)
                     linksDownloaded = true
-                }
+                }*/
                 return stat
             })
             resultAllK[key] = resultSingleK

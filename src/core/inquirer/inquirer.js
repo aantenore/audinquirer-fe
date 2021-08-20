@@ -182,14 +182,14 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }, setMess
     statTemplate = { ...config.template }
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
         let keyword = keywords[keywordIndex]
-        //keywordPromises.push(
-        await processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
-            console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
-            errorKs.push(keyword)
-        })
-        //)
+        keywordPromises.push(
+            processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
+                console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
+                errorKs.push(keyword)
+            })
+        )
     }
-    //await Promise.all(keywordPromises)
+    await Promise.all(keywordPromises)
     setMessage('Finalizing, please wait some minutes')
     let stats = await processOutput(name)
     if (stats) {
