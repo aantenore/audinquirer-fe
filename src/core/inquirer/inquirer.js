@@ -63,7 +63,7 @@ var getBookHaveBulletPointInDescription = async (url) => {
 var processBook = async (book, keyword, setMessage) => {
     let bookId = book.titleAU + ((book.subTitleAU) ? (' ' + book.subTitleAU) : '') + ((book.authorAU) ? (' ' + book.authorAU) : '')
     console.log('[inquirer.processBook] book: ', bookId)
-    setMessage('Processing book: '+bookId)
+    setMessage('Processing book: ' + bookId)
     let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId)).replace('{searchType}', 'audible')
     let amazonBookUrl = await getBookUrl(amazonSearchUrl, `Search results on Amazon: ${book.titleAU}`)
     let details = await getBookDetails(amazonBookUrl, `Book page on Amazon: ${book.titleAU}`)
@@ -74,7 +74,7 @@ var processBook = async (book, keyword, setMessage) => {
 
 var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIndex = 0, totalKeywords = 1, setMessage) => {
     console.log('[inquirer.processKeyword] keyword: ', keyword)
-    setMessage('Processing keyword: '+keyword)
+    setMessage('Processing keyword: ' + keyword)
     let audibleUrl = config.AUDIBLE_URL.replace('{searchString}', encodeURIComponent(keyword))
 
     let booksAndCompetitor = await getBooks(audibleUrl, `Search results on Audible: ${keyword}`)
@@ -111,11 +111,11 @@ var processOutput = async (myName) => {
             let bsr = bsrTemp && bsrTemp.length > 0 ? parseInt(bsrTemp[0].replace('.', '').replace(',', '')) : -1
             let releaseDate = Date.parse(bookDetails['releaseDateAM'])
             let reviewsNumber = -1
-            if(bookDetails['reviewsAU'] === 'Not rated yet'){
+            if (bookDetails['reviewsAU'] === 'Not rated yet') {
                 reviewsNumber = 0
-            }else{
+            } else {
                 let tempReviewsNumber = bookDetails['reviewsAU'] ? bookDetails['reviewsAU'].match(/[0-9]+/) : []
-                reviewsNumber = tempReviewsNumber && tempReviewsNumber.length > 0 ? parseInt(tempReviewsNumber[0].replace(',','')) : -1
+                reviewsNumber = tempReviewsNumber && tempReviewsNumber.length > 0 ? parseInt(tempReviewsNumber[0].replace(',', '')) : -1
             }
             let author = bookDetails['authorAM']
             let publisher = bookDetails['publisherAM']
@@ -174,22 +174,32 @@ var processOutput = async (myName) => {
 }
 
 
-var main = async (name, keywords = [], goToProgressBarState = () => { }, setMessage = () => {}) => {
+var main = async (name, keywords = [], goToProgressBarState = () => { }, setMessage = () => { }) => {
     await setConfig()
     //await setKeywords()
     let errorKs = []
     let keywordPromises = []
     statTemplate = { ...config.template }
+    let batchItems = 0
+    let maxBatchSize = 5
+    let batchSize = Math.min(maxBatchSize, keywords.length)
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
-        let keyword = keywords[keywordIndex]
-        keywordPromises.push(
-            processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
-                console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
-                errorKs.push(keyword)
-            })
-        )
+        if (batchItems < batchSize) {
+            let keyword = keywords[keywordIndex]
+            keywordPromises.push(
+                processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
+                    console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
+                    errorKs.push(keyword)
+                })
+            )
+            batchItems++
+            if (batchItems === batchSize) {
+                await Promise.all(keywordPromises)
+                batchItems = 0
+                batchSize = Math.min(maxBatchSize, (keywords.length - keywordIndex - 1))
+            }
+        }
     }
-    await Promise.all(keywordPromises)
     setMessage('Finalizing, please wait some minutes')
     let stats = await processOutput(name)
     if (stats) {
