@@ -184,21 +184,21 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }, setMess
     let maxBatchSize = 5
     let batchSize = Math.min(maxBatchSize, keywords.length)
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
-        if (batchItems < batchSize) {
+        //if (batchItems < batchSize) {
             let keyword = keywords[keywordIndex]
-            keywordPromises.push(
-                processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
+            //keywordPromises.push(
+            await processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
                     console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
                     errorKs.push(keyword)
                 })
-            )
-            batchItems++
+            //)
+            /*batchItems++
             if (batchItems === batchSize) {
                 await Promise.all(keywordPromises)
                 batchItems = 0
                 batchSize = Math.min(maxBatchSize, (keywords.length - keywordIndex - 1))
-            }
-        }
+            }*/
+        //}
     }
     setMessage('Finalizing, please wait some minutes')
     let stats = await processOutput(name)
