@@ -82,7 +82,7 @@ var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIn
 
     let bookPromises = []
     let step = 2
-    let nextStop = step
+    let nextStop = step-1
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
         let book = books[bookIndex]
         bookPromises.push(processBook(book, keyword, setMessage).catch(e => { console.error('[inquirer.processKeyword] processKeywordError for book: ', books[bookIndex].titleAU, '\n', e); throw e; })
