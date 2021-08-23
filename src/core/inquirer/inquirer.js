@@ -80,13 +80,11 @@ var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIn
     let booksAndCompetitor = await getBooks(audibleUrl, `Search results on Audible: ${keyword}`)
     let books = booksAndCompetitor.books
 
-    let bookPromises = []
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
         let book = books[bookIndex]
-        bookPromises.push(processBook(book, keyword, setMessage).catch(e => { console.error('[inquirer.processKeyword] processKeywordError for book: ', books[bookIndex].titleAU, '\n', e); throw e; })
-        .then(()=>goToProgressBarState((bookIndex + 1) / (books.length * totalKeywords) * 10)))
+        await processBook(book, keyword, setMessage).catch(e => { console.error('[inquirer.processKeyword] processKeywordError for book: ', books[bookIndex].titleAU, '\n', e); throw e; })
+        goToProgressBarState((bookIndex + 1) / (books.length * totalKeywords) * 10)
     }
-    await Promise.all(bookPromises)
     output[keyword]['competitors'] = booksAndCompetitor.competitorsAU
 }
 
