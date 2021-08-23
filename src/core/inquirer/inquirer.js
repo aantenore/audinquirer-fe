@@ -188,8 +188,9 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }, setMess
             let keyword = keywords[keywordIndex]
             keywordPromises.push(
             processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage)
-            //retry
-            .catch(()=>processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage))
+            //retry after 0-10s
+            .catch(async ()=> await new Promise(resolve => setTimeout(resolve, Math.random() * 10000)))
+            .then(()=>processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage))
             //kw in error
             .catch((e) => {
                     console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
