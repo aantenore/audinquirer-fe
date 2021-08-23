@@ -187,7 +187,7 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }, setMess
         if (batchItems < batchSize) {
             let keyword = keywords[keywordIndex]
             keywordPromises.push(
-            await processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage)
+            processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage)
             //retry
             .catch(()=>processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage))
             //kw in error
