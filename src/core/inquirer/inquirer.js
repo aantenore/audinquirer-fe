@@ -35,9 +35,9 @@ var getBooks = async (url, name) => {
     return result
 }
 
-var getBookDetails = async (url, name) => {
+var getBooksDetails = async (urls, name) => {
     let result
-    await parser.getBookDetails(url, config.DO_SCREEN_AMAZON && name).then(res => result = res.data).catch(e => {
+    await parser.getBookDetails(urls, config.DO_SCREEN_AMAZON && name).then(res => result = res.data).catch(e => {
         console.error('[inquirer.getBookDetails] Error for getBookDetails', process.env.VERBOSE === 'true' ? e : "");
         throw e;
     })
@@ -46,9 +46,9 @@ var getBookDetails = async (url, name) => {
 }
 
 
-var getBookUrl = async (url, name) => {
+var getBookUrls = async (urls, name) => {
     let result
-    await parser.getBookUrl(url, config.DO_SCREEN_AMAZON && name).then(res => result = res.data).catch(e => { console.error('[inquirer.getBookUrl] Error for getBookUrl', process.env.VERBOSE === 'true' ? e : ""); throw e; })
+    await parser.getBookUrl(urls, config.DO_SCREEN_AMAZON && name).then(res => result = res.data).catch(e => { console.error('[inquirer.getBookUrl] Error for getBookUrl', process.env.VERBOSE === 'true' ? e : ""); throw e; })
     if (process.env.EXTENDEDLOGS === 'true') console.log('[inquirer.getBookUrl] book url: ', result)
     return result
 }
@@ -60,17 +60,6 @@ var getBookHaveBulletPointInDescription = async (url) => {
     return result
 }
 
-var processBook = async (book, keyword, setMessage) => {
-    let bookId = book.titleAU + ((book.subTitleAU) ? (' ' + book.subTitleAU) : '') + ((book.authorAU) ? (' ' + book.authorAU) : '')
-    console.log('[inquirer.processBook] book: ', bookId)
-    setMessage('Processing book: ' + bookId)
-    let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId)).replace('{searchType}', 'audible')
-    let amazonBookUrl = await getBookUrl(amazonSearchUrl, `Search results on Amazon: ${book.titleAU}`)
-    let details = await getBookDetails(amazonBookUrl, `Book page on Amazon: ${book.titleAU}`)
-    output[keyword] = output[keyword] ? output[keyword] : {}
-    output[keyword][bookId] = { ...details, ...book }
-}
-
 
 var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIndex = 0, totalKeywords = 1, setMessage) => {
     console.log('[inquirer.processKeyword] keyword: ', keyword)
@@ -80,11 +69,27 @@ var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIn
     let booksAndCompetitor = await getBooks(audibleUrl, `Search results on Audible: ${keyword}`)
     let books = booksAndCompetitor.books
 
+    //
+    setMessage('Processing books for ' + keyword)
+    let bookUrls = {}
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
         let book = books[bookIndex]
-        await processBook(book, keyword, setMessage).catch(e => { console.error('[inquirer.processKeyword] processKeywordError for book: ', books[bookIndex].titleAU, '\n', e); throw e; })
-        goToProgressBarState((bookIndex + 1) / (books.length * totalKeywords) * 10)
+        let bookId = book.titleAU + ((book.subTitleAU) ? (' ' + book.subTitleAU) : '') + ((book.authorAU) ? (' ' + book.authorAU) : '')
+        let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId)).replace('{searchType}', 'audible')
+        console.log('[inquirer.processBook] book: ', bookId)
+        bookUrls[bookId]=amazonSearchUrl
     }
+
+    let amazonBookUrls = await getBookUrls(bookUrls, `Search results on Amazon`)
+    let details = await getBooksDetails(amazonBookUrls, `Book page on Amazon`)
+    output[keyword] = output[keyword] ? output[keyword] : {}
+
+    for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
+        let book = books[bookIndex]
+        let bookId = book.titleAU + ((book.subTitleAU) ? (' ' + book.subTitleAU) : '') + ((book.authorAU) ? (' ' + book.authorAU) : '')
+        output[keyword][bookId] = { ...details[bookId], ...book }
+    }
+    //
     output[keyword]['competitors'] = booksAndCompetitor.competitorsAU
 }
 
@@ -185,19 +190,19 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }, setMess
     let batchSize = Math.min(maxBatchSize, keywords.length)
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
         //if (batchItems < batchSize) {
-            let keyword = keywords[keywordIndex]
-            //keywordPromises.push(
-            await processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
-                    console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
-                    errorKs.push(keyword)
-                })
-            //)
-            /*batchItems++
-            if (batchItems === batchSize) {
-                await Promise.all(keywordPromises)
-                batchItems = 0
-                batchSize = Math.min(maxBatchSize, (keywords.length - keywordIndex - 1))
-            }*/
+        let keyword = keywords[keywordIndex]
+        //keywordPromises.push(
+        await processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
+            console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
+            errorKs.push(keyword)
+        })
+        //)
+        /*batchItems++
+        if (batchItems === batchSize) {
+            await Promise.all(keywordPromises)
+            batchItems = 0
+            batchSize = Math.min(maxBatchSize, (keywords.length - keywordIndex - 1))
+        }*/
         //}
     }
     setMessage('Finalizing, please wait some minutes')
