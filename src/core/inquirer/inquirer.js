@@ -81,11 +81,11 @@ var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIn
     }
 
     let amazonBookUrls = await getBookUrls(bookUrls, `Search results on Amazon`)
-    goToProgressBarState((keywordIndex + 1) / (totalKeywords) * 50)
+    goToProgressBarState((keywordIndex + 1) / (totalKeywords + 1 ) * 50)
     setMessage('Processing books for ' + keyword)
     setMessage('Retrieving book\'s details from Audible for ' + keyword)
     let details = await getBooksDetails(amazonBookUrls, `Book page on Amazon`)
-    goToProgressBarState((keywordIndex + 1) / (totalKeywords) * 50)
+    goToProgressBarState((keywordIndex + 1) / (totalKeywords + 1 ) * 50)
     output[keyword] = output[keyword] ? output[keyword] : {}
 
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
