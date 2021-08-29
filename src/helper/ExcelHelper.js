@@ -23,7 +23,7 @@ class ExcelHelper {
             }
             return keyword
         })
-        let linksDownloaded = false
+        //let linksDownloaded = false
         allKeywords.map(key => {
             let resultSingleK = []
             Object.keys(statTemplate).map((stat, rowIndex) => {

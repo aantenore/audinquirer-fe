@@ -53,12 +53,12 @@ var getBookUrls = async (urls, name) => {
     return result
 }
 
-var getBookHaveBulletPointInDescription = async (url) => {
+/*var getBookHaveBulletPointInDescription = async (url) => {
     let result
     await parser.getBookHaveBulletPointInDescription(url).then(res => result = res.data).catch(e => { console.error('[inquirer.getBookHaveBulletPointInDescription] Error for getBookHaveBulletPointInDescription', process.env.VERBOSE === 'true' ? e : ""); throw e; })
     if (process.env.EXTENDEDLOGS === 'true') console.log('[inquirer.getBookHaveBulletPointInDescription] bookHaveBulletPointInDescription: ', result)
     return result
-}
+}*/
 
 
 var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIndex = 0, totalKeywords = 1, setMessage) => {
@@ -76,9 +76,9 @@ var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIn
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
         let book = books[bookIndex]
         let bookId = book.titleAU + ((book.subTitleAU) ? (' ' + book.subTitleAU) : '') + ((book.authorAU) ? (' ' + book.authorAU) : '')
-        let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId)).replace('{searchType}', 'audible')
+        let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId.substr(0,Math.min(249,bookId.length)))).replace('{searchType}', 'audible')
         console.log('[inquirer.processBook] book: ', bookId)
-        bookUrls[bookId]=amazonSearchUrl
+        bookUrls[bookId] = amazonSearchUrl
     }
 
     let amazonBookUrls = await getBookUrls(bookUrls, `Search results on Amazon`)
@@ -128,11 +128,11 @@ var processOutput = async (myName) => {
                 reviewsNumber = tempReviewsNumber && tempReviewsNumber.length > 0 ? parseInt(tempReviewsNumber[0].replace(',', '')) : -1
             }
             let author = bookDetails['authorAM']
-            let publisher = bookDetails['publisherAM']
+            //let publisher = bookDetails['publisherAM']
             let narrator = bookDetails['narratorAM']
             let subTitle = bookDetails['subTitleAU']
-            let isSelfPublished = publisher && publisher ? publisher.includes(author) : false
-            let audibleLink = bookDetails['audibleUrlAU']
+            //let isSelfPublished = publisher && publisher ? publisher.includes(author) : false
+            //let audibleLink = bookDetails['audibleUrlAU']
             let bsrLessThan30k = bsr < 30000 && bsr >= 0
             if (bsrLessThan30k) {
                 stat.A++
@@ -188,11 +188,11 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }, setMess
     await setConfig()
     //await setKeywords()
     let errorKs = []
-    let keywordPromises = []
+    //let keywordPromises = []
     statTemplate = { ...config.template }
-    let batchItems = 0
-    let maxBatchSize = 5
-    let batchSize = Math.min(maxBatchSize, keywords.length)
+    //let batchItems = 0
+    //let maxBatchSize = 5
+    //let batchSize = Math.min(maxBatchSize, keywords.length)
     for (let keywordIndex = 0; keywordIndex < keywords.length; keywordIndex++) {
         //if (batchItems < batchSize) {
         let keyword = keywords[keywordIndex]
