@@ -124,7 +124,7 @@ var processOutput = async (myName) => {
             if (bookDetails['reviewsAU'] === 'Not rated yet') {
                 reviewsNumber = 0
             } else {
-                let tempReviewsNumber = bookDetails['reviewsAU'] ? bookDetails['reviewsAU'].match(/[0-9]+/) : []
+                let tempReviewsNumber = bookDetails['reviewsAU'] ? bookDetails['reviewsAU'].match(/[0-9]+(,[0-9]+)?/) : []
                 reviewsNumber = tempReviewsNumber && tempReviewsNumber.length > 0 ? parseInt(tempReviewsNumber[0].replace(',', '')) : -1
             }
             let author = bookDetails['authorAM']
