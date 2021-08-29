@@ -185,6 +185,7 @@ var processOutput = async (myName) => {
 
 
 var main = async (name, keywords = [], goToProgressBarState = () => { }, setMessage = () => { }) => {
+    output = {}
     await setConfig()
     //await setKeywords()
     let errorKs = []
