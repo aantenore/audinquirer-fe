@@ -198,6 +198,7 @@ var main = async (name, keywords = [], goToProgressBarState = () => { }, setMess
         //if (batchItems < batchSize) {
         let keyword = keywords[keywordIndex]
         //keywordPromises.push(
+        if(keywordIndex > 0 && keywordIndex%5 === 0) await new Promise(resolve => setTimeout(resolve, Math.random()*10000));
         await processKeyword(keyword, goToProgressBarState, keywordIndex, keywords.length, setMessage).catch((e) => {
             console.error('[inquirer.main] Error for keyword: ', keyword, ', please retry', process.env.VERBOSE === 'true' ? e : "")
             errorKs.push(keyword)
