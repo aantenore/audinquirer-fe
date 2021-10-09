@@ -76,7 +76,8 @@ var processKeyword = async (keyword, goToProgressBarState = () => { }, keywordIn
     for (let bookIndex = 0; bookIndex < books.length; bookIndex++) {
         let book = books[bookIndex]
         let bookId = book.titleAU + ((book.subTitleAU) ? (' ' + book.subTitleAU) : '') + ((book.authorAU) ? (' ' + book.authorAU) : '')
-        let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(bookId.substr(0,Math.min(249,bookId.length)))).replace('{searchType}', 'audible')
+        let asin = book['asinAU']
+        let amazonSearchUrl = config.AMAZON_URL.replace('{searchString}', encodeURIComponent(asin?asin:bookId.substr(0,Math.min(249,bookId.length)))).replace('{searchType}', 'audible')
         console.log('[inquirer.processBook] book: ', bookId)
         bookUrls[bookId] = amazonSearchUrl
     }
